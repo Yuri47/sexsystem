@@ -4,11 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class produtos extends Model
 {
     //
       protected $fillable = [
-        'produto_id', 'codigo', 'preco',
+        'produto.id', 'codigo', 'preco',
     ];
+    public $timestamps = false;
 
 }

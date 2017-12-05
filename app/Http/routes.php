@@ -15,3 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('searchCode', 'SearchController@makeSearch');
+Route::post('modifyPrice', 'SearchController@modifyPrice');
