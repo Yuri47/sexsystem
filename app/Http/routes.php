@@ -14,5 +14,18 @@
 Route::get('/', function () {
     return view('welcome');
 });
+//Route::get('/search', function () {
+ //   return view('search');
+//});
 Route::post('searchCode', 'SearchController@makeSearch');
 Route::post('modifyPrice', 'SearchController@modifyPrice');
+
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
+
+
+Route::get('/search', [
+    'middleware' => 'auth',
+    'uses' => 'SearchController@returnView'
+]);

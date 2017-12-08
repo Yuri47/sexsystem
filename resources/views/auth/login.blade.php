@@ -2,18 +2,6 @@
 
 @section('content')
 <div class="container">
-    
-    
-    
-    
-    
-    
-      @if (Auth::guest())
-                       
-           
-    
-    
-    
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -75,16 +63,4 @@
         </div>
     </div>
 </div>
-
-
-         @else
-                         
-                                {{ Auth::user()->name }} <span class="caret"></span>
-                                <a href="/search"><button>Pesquisar</button></a>
-                          
-                    @endif
-    
-
-
-
 @endsection

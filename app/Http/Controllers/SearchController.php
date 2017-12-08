@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use DB;
 use App\produtos;
+use App\NovoPreco;
+use App\User;
 
 class SearchController extends Controller
 {
@@ -17,25 +19,31 @@ class SearchController extends Controller
     public function makeSearch(Request $request) {
         
         $codeNumber = $request->input('codeNumber');
+        $idUser = $request->input('idUser');
         //echo $codeNumber;
         
         $prod = DB::table('produtos')->where('codigo', '=', $codeNumber)->first();
-      //  dd ($prod);
+        $novoPreco = DB::table('novo_precos')->where([
+                                                    ['idProduto', '=', $prod->id], 
+                                                     ['idUser', '=', $idUser],
+                                                    ])->first();
+         //dd ($novoPreco);
         
         //UPDATE tabela SET NomeCampo=REPLACE(NomeCampo,',','.')
         
         if (empty($prod)) {
             $mensagem = "Código não encontrado!";
-            return view('welcome', ['mensagem' => $mensagem]);
+            return view('search', ['mensagem' => $mensagem]);
         }else {
         
         $precoFinal = 0;
         
+       $usuario = User::find($idUser);     
         
        // echo  $prod->preco . "<br>";
         $preco =   (double)$prod->preco ; 
         
-        if ($prod->novoPreco == NULL) {
+        if ($usuario->type == 'admin') {
         
         
         if ($preco <= 3) {
@@ -60,17 +68,62 @@ class SearchController extends Controller
              $precoFinal = ($preco / 100) * 260;
          }
         
-        } else {
-            $precoFinal = $prod->novoPreco;
+        } elseif ($usuario->type == 'resale') {
+           // $precoFinal = ($preco / 100) * 150;
+            
+        }  
+            //else {
+        //    $precoFinal = $prod->novoPreco;
+       // }
+            
+        if($novoPreco =! null) {
+           // $precoFinal = $novoPreco->novoPreco;
         }
-        
+        if ($usuario->type == 'resale') {
+            $preco = ($preco / 100) * 150;
+            
+            
+             if ($preco <= 3) {
+             $precoFinal = ($preco / 100) * 420;
+         }
+        if ($preco > 3 && $preco <= 6) {
+             $precoFinal = ($preco / 100) * 320;
+         }
+        if ($preco > 6 && $preco <= 8) {
+             $precoFinal = ($preco / 100) * 270;
+         }
+        if ($preco > 8 && $preco <= 12) {
+             $precoFinal = ($preco / 100) * 250;
+         }
+        if ($preco > 12 && $preco <= 16) {
+             $precoFinal = ($preco / 100) * 220;
+         }
+        if ($preco > 16 && $preco <= 25) {
+             $precoFinal = ($preco / 100) * 200;
+         }
+        if ($preco > 25) {
+             $precoFinal = ($preco / 100) * 170;
+         }
+            
+        }
+            
+             if($novoPreco =! null) {
+            //$precoFinal = $novoPreco->novoPreco;
+               //  dd($novoPreco);
+                 $novoPreco = DB::table('novo_precos')->where([
+                                                    ['idProduto', '=', $prod->id], 
+                                                     ['idUser', '=', $idUser],
+                                                    ])->first();
+                 //dd($novoPreco);
+                  $precoFinal = $novoPreco->novoPreco;
+        }
         
         
         //echo "Preço de custo: " . $prod->preco;
         //echo "<br>Preço final: " . $precoFinal;
         $precoFinal = number_format($precoFinal, 2, '.', '');
         
-        return view('welcome', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo]);
+        return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo]);
         }
         
     }
@@ -84,16 +137,52 @@ class SearchController extends Controller
         
          $id = $request->input('id');
          $newPrice = $request->input('newPrice');
-        //echo $codeNumber;
-        $prod = produtos::find($id);
-            $prod->novoPreco = $newPrice;
-            $prod->save();
+         $idUser = $request->input('idUser');
         
+         echo $idUser;
+         
+        $precoFinal = 0;
         
+        //pega o dado no banco
         $prod = DB::table('produtos')->where('id', '=', $id)->first();
+        //pega o dado no banco de novo preço
+        $novoPreco = DB::table('novo_precos')->where([
+                                                    ['idProduto', '=', $id], 
+                                                     ['idUser', '=', $idUser],
+                                                    ])->first();
+        //se o preço não existir na tabela de novos preços(null), será criado o registro
+       // dd($novoPreco);
+        if ($novoPreco == null) {
+            
+            $cadNovoPreco = [
+             
+            'idUser' => $idUser,
+            'idProduto' => $prod->id,
+            'novoPreco' => $newPrice
+        ];
+        NovoPreco::create($cadNovoPreco);
+            
+             $precoFinal = $newPrice;
+           
+             
+        } else {
+            $novoPreco = NovoPreco::find($novoPreco->id);
+            $novoPreco->novoPreco = $newPrice;
+            $novoPreco->save();
+            
+             $precoFinal = $novoPreco->novoPreco;
+           
+        }
+        
+         
+        
+    //    $novoPreco = DB::table('novo_precos')->where('idProduto', '=', $id)->first();
+       // dd($novoPreco);
         
         
-        $precoFinal = $prod->novoPreco;
+        
+        
+       
         
         $precoFinal = number_format($precoFinal, 2, '.', '');
         
@@ -101,19 +190,18 @@ class SearchController extends Controller
         
         $preco =   (double)$prod->preco;
         
-        return view('welcome', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo]);
+       return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo]);
         
         
-        
-        
-        
-        
-        
-        
+         
         
         
     }
     
+    
+    public function returnView() {
+        return view('search');
+    }
     
     
     
