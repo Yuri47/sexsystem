@@ -23,10 +23,7 @@ class SearchController extends Controller
         //echo $codeNumber;
         
         $prod = DB::table('produtos')->where('codigo', '=', $codeNumber)->first();
-        $novoPreco = DB::table('novo_precos')->where([
-                                                    ['idProduto', '=', $prod->id], 
-                                                     ['idUser', '=', $idUser],
-                                                    ])->first();
+        
          //dd ($novoPreco);
         
         //UPDATE tabela SET NomeCampo=REPLACE(NomeCampo,',','.')
@@ -35,6 +32,9 @@ class SearchController extends Controller
             $mensagem = "Código não encontrado!";
             return view('search', ['mensagem' => $mensagem]);
         }else {
+            
+           
+          //  dd ($novoPreco);
         
         $precoFinal = 0;
         
@@ -76,9 +76,7 @@ class SearchController extends Controller
         //    $precoFinal = $prod->novoPreco;
        // }
             
-        if($novoPreco =! null) {
-           // $precoFinal = $novoPreco->novoPreco;
-        }
+        
         if ($usuario->type == 'resale') {
             $preco = ($preco / 100) * 150;
             
@@ -107,15 +105,22 @@ class SearchController extends Controller
             
         }
             
-             if($novoPreco =! null) {
-            //$precoFinal = $novoPreco->novoPreco;
-               //  dd($novoPreco);
-                 $novoPreco = DB::table('novo_precos')->where([
+            
+             $novoPreco = DB::table('novo_precos')->where([
                                                     ['idProduto', '=', $prod->id], 
                                                      ['idUser', '=', $idUser],
                                                     ])->first();
-                 //dd($novoPreco);
-                  $precoFinal = $novoPreco->novoPreco;
+           // dd ($novoPreco);
+             if($novoPreco ==! null) {
+            //$precoFinal = $novoPreco->novoPreco;
+             //    dd($novoPreco);
+                 $np = DB::table('novo_precos')->where([
+                                                    ['idProduto', '=', $prod->id], 
+                                                     ['idUser', '=', $idUser],
+                                                    ])->first();
+               //  dd($novoPreco);
+                // dd($np);
+                  $precoFinal = $np->novoPreco;
         }
         
         
