@@ -127,8 +127,10 @@ class SearchController extends Controller
         //echo "Preço de custo: " . $prod->preco;
         //echo "<br>Preço final: " . $precoFinal;
         $precoFinal = number_format($precoFinal, 2, '.', '');
+            
+        $descricaoItem = forneceDescricao($codeNumber);    
         
-        return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo]);
+        return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo, 'descricao' => $descricaoItem]);
         }
         
     }
@@ -143,8 +145,9 @@ class SearchController extends Controller
          $id = $request->input('id');
          $newPrice = $request->input('newPrice');
          $idUser = $request->input('idUser');
+         $descricaoItem = $request->input('descricao');
         
-         echo $idUser;
+       //  echo $idUser;
          
         $precoFinal = 0;
         
@@ -195,7 +198,7 @@ class SearchController extends Controller
         
         $preco =   (double)$prod->preco;
         
-       return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo]);
+       return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo, 'descricao' => $descricaoItem]);
         
         
          
@@ -206,10 +209,33 @@ class SearchController extends Controller
     
     public function returnView() {
         return view('search');
+        
+    }
+     
+    
+public function getData() {
+ 
+    return forneceDescricao('C1020');
+ 
+
+}
+    
+ 
+    public function cad() {
+        return view('cad');
     }
     
-    
-    
+    public function logDev(Request $request) {
+        $log = $request->input('log'); 
+        if($log == '051211bpai46'){
+            return view('cad', ['situacao' => 'true']);
+            
+        }
+        else {
+            return view('cad', ['situacao' => 'false']);
+              
+        }
+    }
      
     
     
