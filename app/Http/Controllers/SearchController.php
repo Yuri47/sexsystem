@@ -128,9 +128,35 @@ class SearchController extends Controller
         //echo "<br>Preço final: " . $precoFinal;
         $precoFinal = number_format($precoFinal, 2, '.', '');
             
-        $descricaoItem = forneceDescricao($codeNumber);    
+       $descricaoItem = (forneceDescricao($codeNumber)['descricao']);    
+            
+            $val = forneceDescricao($codeNumber)['preco'];
+         
+            $disponivel = null;
+            
+            if($descricaoItem == 'Undefined offset: 1' || $descricaoItem == null) {
+                $disponivel = 'VERIFICAR DISPONIBILIDADE NO FORNECEDOR';
+                echo"bora porra";
+            } else {
+                $disponivel = '';
+                echo '<br><br>';
+                echo $descricaoItem;
+                echo '<br><br>';
+            }
+            
+            
+         
+            echo $descricaoItem;
+            
+            if($val == $preco){
+                echo 'preços iguais';
+                
+            } else {
+                echo 'preços diferentes';
+                
+            }
         
-        return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo, 'descricao' => $descricaoItem]);
+        return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo, 'descricao' => $descricaoItem . $disponivel]);
         }
         
     }
@@ -236,8 +262,26 @@ public function getData() {
               
         }
     }
-     
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public function teste() {
+         
+  //  echo forneceDescricao('c1600')[0];
+    echo(forneceDescricao('c1600')['preco']);
+    echo(forneceDescricao('c1600')['descricao']);
+    
+    
+}
 }

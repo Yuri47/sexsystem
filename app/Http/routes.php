@@ -21,11 +21,13 @@ Route::post('searchCode', 'SearchController@makeSearch');
 Route::post('modifyPrice', 'SearchController@modifyPrice');
 Route::post('logDev', 'SearchController@logDev');
 
+
 Route::auth();
 
 Route::get('/home', 'HomeController@index');
 Route::get('/data', 'SearchController@getData');
 Route::get('/cad', 'SearchController@cad');
+Route::get('teste', 'SearchController@teste');
 
 
 Route::get('/search', [
