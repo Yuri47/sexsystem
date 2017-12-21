@@ -33,7 +33,8 @@ class SearchController extends Controller
             return view('search', ['mensagem' => $mensagem]);
         }else {
             
-           
+     
+            
           //  dd ($novoPreco);
         
         $precoFinal = 0;
@@ -42,6 +43,46 @@ class SearchController extends Controller
         
        // echo  $prod->preco . "<br>";
         $preco =   (double)$prod->preco ; 
+            
+            
+           $val = forneceDescricao($codeNumber)['preco'];
+            
+        echo gettype($preco);
+            
+         if($val == $preco && gettype($val) == "double"){
+                echo 'preços iguais';
+                
+            } else {
+                echo 'preços diferentes';
+             
+            
+             $novoPreco = produtos::find($prod->id);
+            $novoPreco->preco = $val;
+            $novoPreco->save();
+              
+             $preco = $val;
+                echo "preço modificado";
+                
+            }    
+                
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
         
         if ($usuario->type == 'admin') {
         
@@ -130,33 +171,25 @@ class SearchController extends Controller
             
        $descricaoItem = (forneceDescricao($codeNumber)['descricao']);    
             
-            $val = forneceDescricao($codeNumber)['preco'];
+            
          
             $disponivel = null;
             
             if($descricaoItem == 'Undefined offset: 1' || $descricaoItem == null) {
                 $disponivel = 'VERIFICAR DISPONIBILIDADE NO FORNECEDOR';
-                echo"bora porra";
+                 
             } else {
                 $disponivel = '';
-                echo '<br><br>';
-                echo $descricaoItem;
-                echo '<br><br>';
+               
             }
             
             
          
-            echo $descricaoItem;
+          
             
-            if($val == $preco){
-                echo 'preços iguais';
-                
-            } else {
-                echo 'preços diferentes';
-                
-            }
+           
         
-        return view('search', ['preco' => $preco, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo, 'descricao' => $descricaoItem . $disponivel]);
+        return view('search', ['preco' => $val, 'precoFinal' => $precoFinal, 'id' => $prod->id, 'codigo' => $prod->codigo, 'descricao' => $descricaoItem . $disponivel]);
         }
         
     }
@@ -253,7 +286,7 @@ public function getData() {
     
     public function logDev(Request $request) {
         $log = $request->input('log'); 
-        if($log == '051211bpai46'){
+        if(md5($log) == 'e85c059fa118b510dc5a8956d238e313'){
             return view('cad', ['situacao' => 'true']);
             
         }
@@ -278,10 +311,11 @@ public function getData() {
     
     public function teste() {
          
-  //  echo forneceDescricao('c1600')[0];
-    echo(forneceDescricao('c1600')['preco']);
-    echo(forneceDescricao('c1600')['descricao']);
-    
+        echo md5(' ');
+        
+        
+        
+        
     
 }
 }

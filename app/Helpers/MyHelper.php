@@ -48,13 +48,13 @@ $tempPreco =   (String)strip_tags(utf8_encode($precoStringFim[0]));
     
     
   
+    $precoFinal = preg_replace("/[^0-9-.]/", "", $precoFinal); //retira todos os caracteres que não sejam numeros ou pontos
     
     
     
     
-    
-    $descricao = strip_tags(utf8_encode($TituloAbre[0]));
-    $precoFinal = (double)$precoFinal;  
+    $descricao = strip_tags($TituloAbre[0]);
+     $precoFinal = (double)$precoFinal;  
     
     
     $obj = ['preco' => $precoFinal, 'descricao' => $descricao];
