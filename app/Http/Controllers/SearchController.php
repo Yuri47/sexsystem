@@ -47,13 +47,13 @@ class SearchController extends Controller
             
            $val = forneceDescricao($codeNumber)['preco'];
             
-        echo gettype($preco);
+        
             
          if($val == $preco && gettype($val) == "double"){
-                echo 'preços iguais';
+               
                 
             } else {
-                echo 'preços diferentes';
+                
              
             
              $novoPreco = produtos::find($prod->id);
@@ -61,7 +61,7 @@ class SearchController extends Controller
             $novoPreco->save();
               
              $preco = $val;
-                echo "preço modificado";
+                
                 
             }    
                 
